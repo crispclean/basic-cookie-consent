@@ -10,7 +10,7 @@ const defaultContent = {
 const bottomRight = ["right-0", "bottom-0", "mr-4", "mb-4", "w-1/3"];
 const bottomLeft = ["left-0", "bottom-0", "ml-4", "mb-4", "w-1/3"];
 
-const CookieConsent = class {
+const BasicCookieConsent = class {
   constructor(content, position) {
     this.content = { ...defaultContent, ...content };
 
@@ -98,4 +98,4 @@ const CookieConsent = class {
   }
 };
 
-export default CookieConsent;
+export default BasicCookieConsent;

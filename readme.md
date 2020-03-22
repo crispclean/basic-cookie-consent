@@ -1,11 +1,19 @@
-# SimpleCookieConsent
+# Basic Cookie Consent
 
-**SimpleCookieConsent** is a very simple and small _(→ 2 kB gzip)_ vanilla JS script.
-
-## Basic Use
+**BasicCookieConsent** is a very baisc and small _(→ 4 kB)_ vanilla JS script.
 
 ## Installation
 
 ```sh
-npm install simplecookieconsent
+npm install basic-cookie-consent --dev
+```
+
+## Usage
+
+The library relies on Javascript to build the DOM/functionality.
+
+```sh
+import BasicCookieConsent from 'basic-cookie-consent';
+
+new BasicCookieConsent();
 ```
