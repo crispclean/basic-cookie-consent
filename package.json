@@ -1,6 +1,6 @@
 {
-  "name": "SimpleCookieConsent",
-  "version": "1.0.0",
+  "name": "basic-cookie-consent",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "devDependencies": {
