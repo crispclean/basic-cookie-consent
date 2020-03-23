@@ -1,5 +1,8 @@
 /** ES6/Tailwind version */
 
+const defaultDOMString =
+  '<div id="basicCookieConsent" class="fixed p-4 bg-white"><div id="desc"></div><div class="flex justify-between items-center mt-4"><button id="buttonAccept" class="bg-black text-white px-4 py-2"></button><a id="moreInfo" href></a></div></div>';
+
 const defaultContent = {
   desc: "This website uses cookies to enhance your browsing experience.",
   buttonAccept: "OK",
@@ -10,25 +13,75 @@ const defaultContent = {
 const bottomRight = ["right-0", "bottom-0", "mr-4", "mb-4", "w-1/3"];
 const bottomLeft = ["left-0", "bottom-0", "ml-4", "mb-4", "w-1/3"];
 
-const BasicCookieConsent = class {
+const CookieConsent = class {
   constructor(content, position) {
+    this.position = position || "bottomRight";
     this.content = { ...defaultContent, ...content };
+    this.domString = defaultDOMString;
 
-    this.initContainer();
-    this.cookieConsent();
+    if (!this.getCookie("consent")) {
+      this.showCookieConsent();
+    }
   }
 
-  initContainer() {
-    this.container = document.createElement("div");
-    this.container.classList.add(
-      ...["fixed", "p-4", "bg-white", ...bottomRight]
-    );
+  showCookieConsent() {
+    this.populateAndAppendElements();
+  }
+
+  populateAndAppendElements() {
+    const populateElements = elements => {
+      elements.forEach(el => {
+        if (el.id === "basicCookieConsent") {
+          el.classList.add(...eval(this.position)); //check to use alternative for eval
+        }
+        if (el.id === "moreInfo" && this.content["moreInfoLink"]) {
+          el.href = this.content["moreInfoLink"];
+          el.target = "_blank";
+        }
+        if (el.childNodes.length) {
+          populateElements(el.childNodes);
+        }
+        if (this.content[el.id]) {
+          el.innerHTML = this.content[el.id];
+        }
+      });
+      return elements;
+    };
+
+    const toNodeList = function(arrayOfNodes) {
+      let fragment = document.createDocumentFragment();
+      arrayOfNodes.forEach(function(item) {
+        fragment.appendChild(item.cloneNode(true));
+      });
+      return fragment.childNodes;
+    };
+
+    let elements = populateElements(this.parseDOMString(this.domString));
+    document.body.append(toNodeList(elements)[0]);
+
+    //Need to add onclick here since clone does not copy event listeners - lame
+    const buttonAccept = document.body.querySelector("#buttonAccept");
+    buttonAccept &&
+      buttonAccept.addEventListener("click", this.dismissCookie.bind(this));
+  }
+
+  parseDOMString(domString) {
+    let html = new DOMParser().parseFromString(domString, "text/html");
+    return Array.from(html.body.childNodes);
+  }
+
+  dismissCookie() {
+    this.setCookie("consent", {
+      essential: true,
+      marketing: false,
+      personal: false
+    });
+    document.body.removeChild(document.getElementById("basicCookieConsent"));
   }
 
   setCookie(name, value) {
     const expire = new Date();
     expire.setTime(expire.getTime() + expire * 24 * 60 * 60 * 1000);
-
     const cookie =
       name +
       "=" +
@@ -55,47 +108,6 @@ const BasicCookieConsent = class {
   eraseCookie(name) {
     document.cookie = name + "=; Max-Age=-99999999;";
   }
-
-  cookieConsent() {
-    if (!this.getCookie("consent")) {
-      const desc = document.createElement("desc");
-      const actionContainer = document.createElement("div");
-      const buttonAccept = document.createElement("button");
-      const moreInfo = document.createElement("a");
-
-      buttonAccept.addEventListener("click", this.cookieDismiss.bind(this));
-
-      actionContainer.classList.add(
-        "flex",
-        "justify-between",
-        "items-center",
-        "mt-4"
-      );
-      buttonAccept.classList.add("bg-black", "text-white", "px-4", "py-2");
-
-      desc.innerHTML = this.content.desc;
-      buttonAccept.innerHTML = this.content.buttonAccept;
-      moreInfo.innerHTML = this.content.moreInfo;
-      moreInfo.href = this.content.moreInfoLink;
-      moreInfo.target = "_blank";
-
-      actionContainer.append(buttonAccept);
-      actionContainer.append(moreInfo);
-
-      this.container.append(desc);
-      this.container.append(actionContainer);
-      document.body.append(this.container);
-    }
-  }
-
-  cookieDismiss() {
-    this.setCookie("consent", {
-      essential: true,
-      marketing: false,
-      personal: false
-    });
-    this.container.classList.add("hidden");
-  }
 };
 
-export default BasicCookieConsent;
+export default CookieConsent;
