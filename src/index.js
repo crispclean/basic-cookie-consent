@@ -1,25 +1,25 @@
 /** ES6/Tailwind version */
 
 const defaultDOMString =
-  '<div id="basicCookieConsent" class="fixed p-4 bg-white"><div id="desc"></div><div class="flex justify-between items-center mt-4"><button id="buttonAccept" class="bg-black text-white px-4 py-2"></button><a id="moreInfo" href></a></div></div>';
+  '<div id="basicCookieConsent" class="fixed p-4 bg-white text-black z-10"><div id="desc"></div><div class="flex justify-between items-center mt-4"><button id="buttonAccept" class="bg-black text-white px-4 py-2"></button><a id="moreInfo" href></a></div></div>';
 
 const defaultContent = {
   desc: "This website uses cookies to enhance your browsing experience.",
   buttonAccept: "OK",
   moreInfo: "Learn more",
-  moreInfoLink: "https://wikis.ec.europa.eu/display/WEBGUIDE/04.+Cookies"
+  moreInfoLink: "https://wikis.ec.europa.eu/display/WEBGUIDE/04.+Cookies",
 };
 
-const bottomRight = ["right-0", "bottom-0", "mr-4", "mb-4", "w-1/3"];
-const bottomLeft = ["left-0", "bottom-0", "ml-4", "mb-4", "w-1/3"];
+const bottomRight = ["right-0", "bottom-0", "mx-4", "mb-4", "lg:w-1/3"];
+const bottomLeft = ["left-0", "bottom-0", "mx-4", "mb-4", "lg:w-1/3"];
 
 const CookieConsent = class {
-  constructor(content, position) {
+  constructor({ content, position }) {
     this.position = position || "bottomRight";
     this.content = { ...defaultContent, ...content };
     this.domString = defaultDOMString;
 
-    if (!this.getCookie("consent")) {
+    if (!this.getCookie("basic-cookie-consent")) {
       this.showCookieConsent();
     }
   }
@@ -29,8 +29,8 @@ const CookieConsent = class {
   }
 
   populateAndAppendElements() {
-    const populateElements = elements => {
-      elements.forEach(el => {
+    const populateElements = (elements) => {
+      elements.forEach((el) => {
         if (el.id === "basicCookieConsent") {
           el.classList.add(...eval(this.position)); //check to use alternative for eval
         }
@@ -48,9 +48,9 @@ const CookieConsent = class {
       return elements;
     };
 
-    const toNodeList = function(arrayOfNodes) {
+    const toNodeList = function (arrayOfNodes) {
       let fragment = document.createDocumentFragment();
-      arrayOfNodes.forEach(function(item) {
+      arrayOfNodes.forEach(function (item) {
         fragment.appendChild(item.cloneNode(true));
       });
       return fragment.childNodes;
@@ -71,12 +71,12 @@ const CookieConsent = class {
   }
 
   dismissCookie() {
-    this.setCookie("consent", {
+    this.setCookie("basic-cookie-consent", {
       essential: true,
       marketing: false,
-      personal: false
+      personal: false,
     });
-    document.body.removeChild(document.getElementById("basicCookieConsent"));
+    document.body.removeChild(document.getElementById("basicCookieConsent")); // https://www.tutorialspoint.com/how-can-detached-dom-elements-cause-memory-leak-in-javascript
   }
 
   setCookie(name, value) {
