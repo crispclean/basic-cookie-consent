@@ -17,3 +17,16 @@ import BasicCookieConsent from 'basic-cookie-consent';
 
 new BasicCookieConsent();
 ```
+
+## API
+
+```{
+    content: {
+        desc: "This website uses cookies to enhance your browsing experience.",
+        buttonAccept: "OK",
+        moreInfo: "Learn more",
+        moreInfoLink: "https://wikis.ec.europa.eu/display/WEBGUIDE/04.+Cookies"
+    },
+    position: 'bottomLeft'
+}
+```
