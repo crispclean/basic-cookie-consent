@@ -1,6 +1,6 @@
 # Basic Cookie Consent
 
-**BasicCookieConsent** is a very baisc and small _(→ 4 kB)_ vanilla JS script.
+**BasicCookieConsent** is a very basic and small vanilla JS script.
 
 ## Installation
 
