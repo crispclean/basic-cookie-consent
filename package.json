@@ -2,7 +2,7 @@
   "name": "basic-cookie-consent",
   "version": "0.0.3",
   "description": "",
-  "main": "index.js",
+  "main": "dist/main.min.js",
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
