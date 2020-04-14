@@ -20,7 +20,8 @@ new BasicCookieConsent();
 
 ## API
 
-```{
+```
+{
     content: {
         desc: "This website uses cookies to enhance your browsing experience.",
         buttonAccept: "OK",
