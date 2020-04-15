@@ -1,3 +1,3 @@
-import BasicCookieConsent from "./cookieconsent";
+import BramCookieConsent from "./cookieconsent";
 
-new BasicCookieConsent();
+new BramCookieConsent();

@@ -1,27 +1,23 @@
-# Basic Cookie Consent
+# Bram Cookie Consent
 
-**BasicCookieConsent** is a very basic and small vanilla JS script.
+**BramCookieConsent** is a barebones and small vanilla CookieConsent JS script (<4kb).
+
+https://tailwindcss.com is currently needed for styling.
 
 ## Installation
 
 ```sh
-npm install basic-cookie-consent --dev
+npm install bram-cookie-consent --dev
 ```
 
 ## Usage
 
-The library relies on Javascript to build the DOM/functionality.
+### JS
 
 ```sh
-import BasicCookieConsent from 'basic-cookie-consent';
+import BramCookieConsent from "./bram-cookie-consent";
 
-new BasicCookieConsent();
-```
-
-## API
-
-```
-{
+new BramCookieConsent({
     content: {
         desc: "This website uses cookies to enhance your browsing experience.",
         buttonAccept: "OK",
@@ -29,5 +25,6 @@ new BasicCookieConsent();
         moreInfoLink: "https://wikis.ec.europa.eu/display/WEBGUIDE/04.+Cookies"
     },
     position: 'bottomLeft'
-}
+});
+
 ```

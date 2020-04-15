@@ -1,9 +1,9 @@
 {
   "name": "bram-cookie-consent",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "",
   "main": "dist/cookieconsent.min.js",
-  "homepage": "https://github.com/crispclean/basic-cookie-consent#readme",
+  "homepage": "https://github.com/crispclean/bram-cookie-consent#readme",
   "dependencies": {
     "parcel": "^2.0.0-alpha.3.2",
     "tailwindcss": "^1.2.0"

@@ -1,7 +1,7 @@
 /** ES6/Tailwind version */
 
 const defaultDOMString = `
-  <div id="basicCookieConsent" class="fixed p-4 bg-white text-black z-10">
+  <div id="bramCookieConsent" class="fixed p-4 bg-white text-black z-10">
     <div id="desc"></div>
     <div class="flex justify-between items-center mt-4">
       <button id="buttonAccept" class="bg-black text-white px-4 py-2"></button>
@@ -25,17 +25,26 @@ const CookieConsent = class {
     this.content = { ...defaultContent, ...params.content };
     this.domString = defaultDOMString;
 
-    document.addEventListener("DOMContentLoaded", () => {
-      if (!this.getCookie("basic-cookie-consent")) {
-        this.showCookieConsent();
-      }
-    });
+    document.addEventListener(
+      "DOMContentLoaded",
+      this.onDomContentLoaded.bind(this)
+    );
+  }
+
+  onDomContentLoaded() {
+    if (!this.getCookie("bram-cookie-consent")) {
+      this.showCookieConsent();
+    }
   }
 
   showCookieConsent() {
-    let elements = this.parseDOMString(this.domString);
-    elements = this.populateElements(this.parseDOMString(this.domString));
-    this.appendElementsToDOM(elements);
+    this.elements = this.parseDOMString(this.domString)[0];
+    this.populateContentAndListeners();
+    document.body.append(this.elements);
+  }
+
+  closeCookieConsent() {
+    document.body.removeChild(document.getElementById("bramCookieConsent")); // https://www.tutorialspoint.com/how-can-detached-dom-elements-cause-memory-leak-in-javascript
   }
 
   parseDOMString(domString) {
@@ -43,49 +52,28 @@ const CookieConsent = class {
     return Array.from(html.body.childNodes);
   }
 
-  populateElements(elements) {
-    elements.forEach((el) => {
-      if (el.id === "basicCookieConsent") {
-        el.classList.add(...eval(this.position)); //check to use alternative for eval
-      }
-      if (el.id === "moreInfo" && this.content["moreInfoLink"]) {
-        el.href = this.content["moreInfoLink"];
-        el.target = "_blank";
-      }
-      if (el.childNodes.length) {
-        this.populateElements(el.childNodes);
-      }
-      if (this.content[el.id]) {
-        el.innerHTML = this.content[el.id];
-      }
-    });
-    return elements;
-  }
+  populateContentAndListeners() {
+    const container = this.elements;
+    container.classList.add(...eval(this.position));
 
-  appendElementsToDOM(elements) {
-    const toNodeList = function (arrayOfNodes) {
-      let fragment = document.createDocumentFragment();
-      arrayOfNodes.forEach(function (item) {
-        fragment.appendChild(item.cloneNode(true));
-      });
-      return fragment.childNodes;
-    };
+    const content = container.children[0];
+    content.innerHTML = this.content["desc"];
 
-    document.body.append(toNodeList(elements)[0]);
-
-    //Need to add onclick here since cloneNode (above) does not copy event listeners - lame
-    const buttonAccept = document.body.querySelector("#buttonAccept");
+    const buttonAccept = container.children[1].children[0];
+    buttonAccept.innerHTML = this.content.buttonAccept;
     buttonAccept &&
-      buttonAccept.addEventListener("click", this.dismissCookie.bind(this));
-  }
+      buttonAccept.addEventListener("click", () => {
+        this.setCookie("bram-cookie-consent", {
+          essential: true,
+          marketing: false,
+          personal: false,
+        });
+        this.closeCookieConsent();
+      });
 
-  dismissCookie() {
-    this.setCookie("basic-cookie-consent", {
-      essential: true,
-      marketing: false,
-      personal: false,
-    });
-    document.body.removeChild(document.getElementById("basicCookieConsent")); // https://www.tutorialspoint.com/how-can-detached-dom-elements-cause-memory-leak-in-javascript
+    const moreInfoLink = container.children[1].children[1];
+    moreInfoLink.href = this.content["moreInfoLink"];
+    moreInfoLink.target = "_blank";
   }
 
   setCookie(name, value) {
